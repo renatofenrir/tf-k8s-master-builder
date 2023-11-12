@@ -1,0 +1,38 @@
+stages:
+  - init
+  - plan
+  - apply
+  - destroy
+
+cache:
+  paths:
+    - .terraform/
+
+init:
+  tags: 
+    - terraform
+  stage: init
+  script:
+    - docker run --rm -u="0:0" -v $PWD:/terraform -w="/terraform" renatofenrir/terraform:v2 terraform init
+
+plan:
+  tags:
+    - terraform
+  stage: plan
+  script:
+    - docker run --rm -u="0:0" -v $PWD:/terraform -w="/terraform" renatofenrir/terraform:v2 terraform plan 
+
+apply:
+  tags:
+    - terraform
+  stage: apply
+  script: 
+    - docker run --rm -u="0:0" -v $PWD:/terraform -w="/terraform" renatofenrir/terraform:v2 terraform apply -auto-approve
+
+destroy:
+  tags:
+    - terraform
+  stage: destroy
+  script: 
+    - docker run --rm -u="0:0" -v $PWD:/terraform -w="/terraform" renatofenrir/terraform:v2 terraform destroy -auto-approve
+  when: manual
